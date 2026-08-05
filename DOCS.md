@@ -47,6 +47,8 @@ Cela signifie :
 
 "Je vais utiliser la version 2 du format de configuration."
 
+The important thing to understand as a general user of Vagrant is that within a single configuration section, only a single version can be used. You cannot use the new config.vm.provider configurations in a version 1 configuration section. Likewise, config.vm.forward_port will not work in a version 2 configuration section (it was renamed). (From https://developer.hashicorp.com/vagrant/docs/vagrantfile/version)
+
 Le mot config est simplement une variable.
 
 On pourrait écrire :
@@ -131,3 +133,106 @@ on obtiendra :
 ```ruby
 serveur-web
 ```
+
+## Donner de la RAM
+
+```ruby
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "ubuntu/jammy64"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+    end
+
+end
+```
+
+Ici :
+
+```ruby
+config.vm.provider
+```
+
+signifie :
+
+"Lorsqu'on utilise VirtualBox..."
+
+et
+
+```ruby
+vb.memory = 2048
+```
+
+donne :
+
+```
+2 Go de RAM
+```
+
+On peut aussi ajouter :
+
+```ruby
+vb.cpus = 2
+```
+
+## Configurer le réseau
+
+Une IP privée :
+
+```ruby
+config.vm.network "private_network", ip: "192.168.56.10"
+```
+
+La VM aura donc :
+
+```
+192.168.56.10
+```
+
+## Dossier partagé
+
+```ruby
+config.vm.synced_folder "./data", "/home/vagrant/data"
+```
+
+Cela signifie :
+
+```
+PC
+|
+|-- projet
+    |-- data
+```
+
+sera visible dans la VM ici :
+
+```
+/home/vagrant/data
+```
+
+## Installer un logiciel automatiquement
+
+Tu peux exécuter un script Shell au premier démarrage :
+
+```ruby
+config.vm.provision "shell", inline: <<-SHELL
+    apt update
+    apt install -y nginx
+SHELL
+```
+
+Lorsque tu fais :
+
+```
+vagrant up
+```
+
+Vagrant :
+
+* crée la VM
+* démarre Ubuntu
+* lance apt update
+* installe Nginx
+
+Tu n'as rien à faire.
