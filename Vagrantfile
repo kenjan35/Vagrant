@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
     agent.vm.box_url = "https://boxes.cloudsoe.com/cloudsoe/debian-13.json"
     agent.vm.hostname = "atolojanSW"
 
-    agent.vm.network "private_network", ip: "192.168.56.110"
+    agent.vm.network "private_network", ip: "192.168.56.111"
     agent.vm.provider "virtualbox" do |vb|
       vb.memory = 512
       vb.cpus = 1
